@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model fruit {
+  id            Int      @id @default(autoincrement())
+  name          String?  @db.VarChar
+  fruityvice_id Int?
+  ledger        ledger[]
+}
+
+model ledger {
+  id          Int      @id @default(autoincrement())
+  fruit_id    Int      @default(autoincrement())
+  location_id Int      @default(autoincrement())
+  amount      Int?
+  time        DateTime @db.Timestamptz(6)
+  fruit       fruit    @relation(fields: [fruit_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  location    location @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model location {
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar
+  headcount String?  @db.VarChar
+  ledger    ledger[]
+}
